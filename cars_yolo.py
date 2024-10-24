@@ -59,19 +59,27 @@ if __name__ == "__main__":
                     class_ids.append(class_id)
 
         indices = cv2.dnn.NMSBoxes(boxes, confidences, 0.5, 0.4)
+        
+        if len(indices) > 0:
+            print("Объект обнаружен")
+            # Draw
+            for i in indices:
+                x, y, w, h = boxes[i]
+                label = str(classes[class_ids[i]])
+                confidence = confidences[i]
 
-        # Draw
-        for i in indices:
-            x, y, w, h = boxes[i]
-            label = str(classes[class_ids[i]])
-            confidence = confidences[i]
+                curr_rect = (x, y, x + w, y + h)
+                calculate_movement_direction(prev_rect, curr_rect)
+                prev_rect = curr_rect
 
-            cv2.rectangle(frame, (x, y), (x + w, y + h), (0, 255, 0), 2)
-            cv2.putText(frame, f'{label} {confidence:.2f}', (x, y - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.6, (0, 255, 0), 2)
+                cv2.rectangle(frame, (x, y), (x + w, y + h), (0, 0, 255), 2)
+                cv2.putText(frame, f'{label}', (x, y - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.6, (0, 0, 255), 2)
 
-            curr_rect = (x, y, x + w, y + h)
-            calculate_movement_direction(prev_rect, curr_rect)
-            prev_rect = curr_rect
+                print('---'*10)
+        else:
+            print("Объекта в кадре нет")
+
+
 
         cv2.imshow('YOLO Object Detection', frame)
 

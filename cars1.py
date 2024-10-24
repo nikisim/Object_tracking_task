@@ -18,17 +18,17 @@ def calculate_movement_direction(prev_bbox, curr_bbox, eps = 2):
     dy = curr_center_y - prev_center_y
 
     # Determine the direction
-    if abs(dx) > eps:
-        if dx > 0:
-            print('Moving right →')
-        elif dx < 0:
-            print('Moving left ←')
-
     if abs(dy) > eps:
         if dy > 0:
-            print('Moving down ↓')
+            print('Движение вниз')
         elif dy < 0:
-            print('Moving up ↑')
+            print('Движение вверх')
+
+    if abs(dx) > eps:
+        if dx > 0:
+            print('Движение вправо')
+        elif dx < 0:
+            print('Движение влево')
 
 
 if __name__ == "__main__":

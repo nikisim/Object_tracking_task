@@ -1,5 +1,5 @@
 import cv2
-from cars1 import calculate_movement_direction
+from tracking_simple import calculate_movement_direction
 
 
 if __name__ == "__main__":

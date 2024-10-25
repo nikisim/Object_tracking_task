@@ -7,7 +7,6 @@ def calculate_movement_direction(prev_bbox, curr_bbox, eps = 2):
     # Current bounding box (x, y, w, h)
     curr_x, curr_y, curr_w, curr_h = curr_bbox
 
-    # Calculate the centroids
     prev_center_x = prev_x + prev_w // 2
     prev_center_y = prev_y + prev_h // 2
 
@@ -36,8 +35,7 @@ if __name__ == "__main__":
     # video = cv2.VideoCapture('Moving Circle.mp4')
     video = cv2.VideoCapture('Car passing.mp4')
 
-    
-    fgbg = cv2.createBackgroundSubtractorMOG2(history=100)
+    fgbg = cv2.createBackgroundSubtractorMOG2()
 
     prev_rect = (0,0,0,0)
 
@@ -48,22 +46,13 @@ if __name__ == "__main__":
         
         # Delete foreground
         fgmask = fgbg.apply(frame)
-        cv2.imshow('Bg mask', fgmask)
-        # retval, mask_thresh = cv2.threshold(fgmask, 160, 255, cv2.THRESH_BINARY)
-        mask_thresh = fgmask
-        # cv2.imshow('diff', fgmask-mask_thresh)
+        # cv2.imshow('Bg mask', fgmask)
 
-        # # # вычисление ядра
+        # Применение операции открытия
         kernel = cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (3, 3))
-        # # closing = cv2.morphologyEx(mask_thresh, cv2.MORPH_CLOSE, kernel)
-        mask_opening = cv2.morphologyEx(mask_thresh, cv2.MORPH_OPEN, kernel)
+        mask_opening = cv2.morphologyEx(fgmask, cv2.MORPH_OPEN, kernel)
 
-        # cv2.imshow('Mask closing', closing)
-        cv2.imshow('Mask opening', mask_opening)
-        
         contours, _ = cv2.findContours(mask_opening, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
-        # frame_ct = cv2.drawContours(frame, contours, -1, (0, 255, 0), 2)
-        # cv2.imshow('Contours', frame_ct)
         for contour in contours:
             # Filter by size
             if cv2.contourArea(contour) > 2200:

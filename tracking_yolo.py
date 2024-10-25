@@ -4,7 +4,6 @@ from tracking_simple import calculate_movement_direction
 
 if __name__ == "__main__":
 
-    # Load YOLO
     net = cv2.dnn.readNet('yolov3.weights', 'yolov3.cfg')
 
     # Load the labels
@@ -14,7 +13,6 @@ if __name__ == "__main__":
     layer_names = net.getLayerNames()
     output_layers = [layer_names[i - 1] for i in net.getUnconnectedOutLayers()]
 
-    # Load the video
     video = cv2.VideoCapture('Car passing.mp4')
 
     prev_rect = (0,0,0,0)

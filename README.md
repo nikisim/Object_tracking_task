@@ -19,7 +19,7 @@
 
 Результаты применения YOLO:
 
-<img src="gifs/Simple_CV_cars.gif" alt="Yolo_obj_tracking.gif" width="550"/>
+<img src="gifs/Yolo_obj_tracking.gif" alt="Yolo_obj_tracking.gif" width="550"/>
 
 ## How to download YOLOv3
 

@@ -1,5 +1,7 @@
 *.mp4
 *.webm
+*.png
+*.ipynb
 yolov3.cfg
 yolov3.weights
 coco.names

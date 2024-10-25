@@ -1,4 +1,5 @@
 *.mp4
+*.webm
 yolov3.cfg
 yolov3.weights
 coco.names

@@ -1,4 +1,5 @@
 import cv2
+import numpy as np
 
 def calculate_movement_direction(prev_bbox, curr_bbox, eps = 2):
     # Previous bounding box (x, y, w, h)
@@ -13,11 +14,10 @@ def calculate_movement_direction(prev_bbox, curr_bbox, eps = 2):
     curr_center_x = curr_x + curr_w // 2
     curr_center_y = curr_y + curr_h // 2
 
-    # Calculate the movement vector
+    # Calculate the movement delta
     dx = curr_center_x - prev_center_x
     dy = curr_center_y - prev_center_y
 
-    # Determine the direction
     if abs(dy) > eps:
         if dy > 0:
             print('Движение вниз')
@@ -33,9 +33,11 @@ def calculate_movement_direction(prev_bbox, curr_bbox, eps = 2):
 
 if __name__ == "__main__":
 
-    video = cv2.VideoCapture('Car passing.mp4')  # Replace with your video source
+    # video = cv2.VideoCapture('Moving Circle.mp4')
+    video = cv2.VideoCapture('Car passing.mp4')
 
-    fgbg = cv2.createBackgroundSubtractorMOG2(detectShadows = True)
+    
+    fgbg = cv2.createBackgroundSubtractorMOG2(history=100)
 
     prev_rect = (0,0,0,0)
 
@@ -46,17 +48,27 @@ if __name__ == "__main__":
         
         # Delete foreground
         fgmask = fgbg.apply(frame)
+        cv2.imshow('Bg mask', fgmask)
+        # retval, mask_thresh = cv2.threshold(fgmask, 160, 255, cv2.THRESH_BINARY)
+        mask_thresh = fgmask
+        # cv2.imshow('diff', fgmask-mask_thresh)
 
-        cv2.imshow('Mask', fgmask)
+        # # # вычисление ядра
+        kernel = cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (3, 3))
+        # # closing = cv2.morphologyEx(mask_thresh, cv2.MORPH_CLOSE, kernel)
+        mask_opening = cv2.morphologyEx(mask_thresh, cv2.MORPH_OPEN, kernel)
+
+        # cv2.imshow('Mask closing', closing)
+        cv2.imshow('Mask opening', mask_opening)
         
-        contours, _ = cv2.findContours(fgmask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
-
+        contours, _ = cv2.findContours(mask_opening, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+        # frame_ct = cv2.drawContours(frame, contours, -1, (0, 255, 0), 2)
+        # cv2.imshow('Contours', frame_ct)
         for contour in contours:
             # Filter by size
-            print(cv2.contourArea(contour))
-            if cv2.contourArea(contour) > 4200:
+            if cv2.contourArea(contour) > 2200:
                 print("---"*10)
-                print("Object detected")
+                print("Объект обнаружен")
                 # Draw bounding box
                 x, y, w, h = cv2.boundingRect(contour)
                 cv2.rectangle(frame, (x, y), (x + w, y + h), (255, 0, 0), 2)
